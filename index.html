@@ -6,7 +6,9 @@
 
 <!-- Interactive buttons -->
 <center>Choose different different professors to see different average GPA
-<!-- Waiting for button implementation -->
+<button onclick="updateBar(gpa_g)">Challen, G.</button>
+<button onclick="updateBar(gpa_w)">Chapman, W.</button>
+<button onclick="updateBar(gpa_l)">Angrave, L.</button>
 
 </center>
 
@@ -104,6 +106,12 @@ bar_SVG
   .style("text-anchor", "middle")
   .text("GPA");
   
+bar_SVG
+  .append("text")
+  .attr("x", width/2)
+  .style("text-anchor", "middle")
+  .text("Overall average GPA for all sections")
+  
 //drawing bars
 var bars = bar_SVG.append("g");
 
@@ -166,6 +174,7 @@ bar_SVG_prof
 function updateBar(data){
     var tempX = 0 - width/2;
     var tempY = 0 - margin.top*0.7;
+    
     var temp = bar_SVG_prof.selectAll("rect")
       .data(data)
       

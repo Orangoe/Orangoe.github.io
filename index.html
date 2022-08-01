@@ -1,1 +1,189 @@
-"wahtever" 
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v4.js"></script>
+<div id="barGraphOverall"></div>
+<div id="barGraphProf"></div>
+
+<!-- Interactive buttons -->
+<center>Choose different different professors to see different average GPA
+<!-- Waiting for button implementation -->
+
+</center>
+
+
+
+
+<script>
+//data from https://waf.cs.illinois.edu/discovery/grade_disparity_between_sections_at_uiuc/
+
+var overall_GPA = [
+  {prof: "Challen, G.", students: 4125, sections: 9, GPA: 3.54},
+  {prof: "Chapman, W.", students: 532, sections: 3, GPA: 3.24},
+  {prof: "Angrave, L.", students: 684, sections: 3, GPA: 3.19}
+];
+
+var GPA_array = [3.54, 3.24, 3.19];
+
+var gpa_g = [
+  {grade: "A", percenta: 76.2},
+  {grade: "B", percenta: 13.1},
+  {grade: "C", percenta: 4.8},
+  {grade: "D", percenta: 2.3},
+  {grade: "F", percenta: 3.6}
+];
+
+var gpa_w = [
+  {grade: "A", percenta: 52.4},
+  {grade: "B", percenta: 25.9},
+  {grade: "C", percenta: 19.0},
+  {grade: "D", percenta: 2.1},
+  {grade: "F", percenta: 0.6}
+];
+
+var gpa_l = [
+  {grade: "A", percenta: 52.6},
+  {grade: "B", percenta: 22.8},
+  {grade: "C", percenta: 18.6},
+  {grade: "D", percenta: 3.5},
+  {grade: "F", percenta: 2.5}
+];
+
+var pie_color = ['lightblue', 'lightgreen', 'lightcyan', 'lightpink', 'lightred'];
+
+//----------------drawing stuff---------------------
+
+//for different monitors
+var margin = {top: 70, bottom: 100, left: 100, right: 100}, 
+width = 800, height = 300;
+
+
+//-------bar graph showing prof name as axis, and GPA as bars--------
+
+//x axis range
+var xs = d3.scaleBand()
+  .domain(overall_GPA.map(function(p) {return p.prof;}))
+  .range([0, width])
+
+//y axis range
+var ys = d3.scaleLinear()
+  .domain([0, 4])
+  .range([height, 0])
+
+var bar_SVG = d3.select("#barGraphOverall")
+  .append("svg")
+  .attr("width", margin.left + margin.right + width)
+  .attr("height", margin.top + margin.bottom + height)
+
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//drawing x axis and text
+bar_SVG
+  .append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(xs));
+
+bar_SVG
+  .append("text")
+  .attr("x", width/2)
+  .attr("y", margin.bottom + height*0.8)
+  .style("text-anchor", "middle")
+  .text("Professors");
+
+
+//drawing y axis and text
+bar_SVG
+  .append("g")
+  .call(d3.axisLeft(ys));
+
+bar_SVG
+  .append("text")
+  .attr("x", 0 - height/2)
+  .attr("y", 0 - margin.left/2)
+  .attr("transform", "rotate(-90)")
+  .style("text-anchor", "middle")
+  .text("GPA");
+  
+//drawing bars
+var bars = bar_SVG.append("g");
+
+GPA_array.forEach((i, d) => {
+  bars.append("rect")
+      .attr("x", margin.left*0.8 + width/3*d)
+      .attr("y", ys(i))
+      .attr("width", width/8)
+      .attr("height", height - ys(i))
+      .attr("fill", "#20306F")
+});
+
+//hoverover
+
+
+
+//-----Horizontal Chart-----
+var xs = d3.scaleBand()
+  .domain(gpa_g.map(function(d) {return d.grade;}))
+  .range([0, height])
+
+var ys = d3.scaleLinear()
+  .domain([0, 100])
+  .range([0, width])
+
+var bar_SVG_prof = d3.select("#barGraphProf")
+  .append("svg")
+  .attr("width", margin.left + margin.right + width)
+  .attr("height", margin.top + margin.bottom + height)
+
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top*0.5 + ")");
+
+//btm axis
+bar_SVG_prof
+  .append("g")
+  .call(d3.axisLeft(xs));
+
+bar_SVG_prof
+  .append("text")
+  .attr("x", 0 - height/2)
+  .attr("y", 0 - margin.left/2 )
+  .attr("transform", "rotate(-90)")
+  .style("text-anchor", "middle")
+  .text("Grades");
+
+//top axis
+bar_SVG_prof
+  .append("g")
+  .call(d3.axisTop(ys));
+
+bar_SVG_prof
+  .append("text")
+  .attr("x", width/2)
+  .attr("y", 0 - margin.top/3)
+  .style("text-anchor", "middle")
+  .text("Percentage");
+  
+
+function updateBar(data){
+    var tempX = 0 - width/2;
+    var tempY = 0 - margin.top*0.7;
+    var temp = bar_SVG_prof.selectAll("rect")
+      .data(data)
+      
+    temp.enter()
+      .append("rect")
+      .merge(temp)
+      
+      .attr("x", 1)
+      .attr("y", function(d) {
+          tempY = tempY + (height - margin.bottom - margin.top)/2.15
+          return tempY
+      })
+      .attr("width", function(d) {return d.percenta*width/100})
+      .attr("height", height/8)
+      .attr("fill", "lightblue")
+}
+
+updateBar(gpa_g)
+
+
+</script>

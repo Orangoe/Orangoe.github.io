@@ -122,9 +122,25 @@ GPA_array.forEach((i, d) => {
       .attr("width", width/8)
       .attr("height", height - ys(i))
       .attr("fill", "#20306F")
-});
+})
+
+
 
 //hoverover
+//source: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
+var HoverInfo = d3.select("#barGraphOverall")
+  .append("div")
+  
+  var mouse_hover = function(d){ 
+      Tooltip.style("opacity", 1)
+             .html(d.prof + "taught: " + d.students + " students in " + d.sections + " sections with an avg GPA of: " + d.GPA)
+  }
+  var mouse_leave = function(d){ Tooltip.style("opacity", 0)}
+
+
+  
+
+  
 
 
 
@@ -143,7 +159,7 @@ var bar_SVG_prof = d3.select("#barGraphProf")
   .attr("height", margin.top + margin.bottom + height)
 
   .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top*0.5 + ")");
+  .attr("transform", "translate(" + margin.left + "," + margin.top*1.5 + ")");
 
 //btm axis
 bar_SVG_prof
@@ -190,6 +206,8 @@ function updateBar(data){
       .attr("width", function(d) {return d.percenta*width/100})
       .attr("height", height/8)
       .attr("fill", "lightblue")
+      
+    
 }
 
 updateBar(gpa_g)
